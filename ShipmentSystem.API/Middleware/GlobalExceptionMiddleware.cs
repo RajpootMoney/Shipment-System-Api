@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
+using ShipmentSystem.Application.Exceptions;
 
 namespace ShipmentSystem.API.Middleware;
 
@@ -20,28 +22,42 @@ public class GlobalExceptionMiddleware
     {
         try
         {
-            await _next(context); // proceed to next middleware
+            await _next(context);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Exception caught in middleware: {ex.Message}");
+            _logger.LogError(ex, "💥 Exception caught in GlobalExceptionMiddleware");
             await HandleExceptionAsync(context, ex);
         }
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
+        int statusCode;
+        string message;
 
-        var result = JsonSerializer.Serialize(
-            new
-            {
-                StatusCode = 500,
-                Message = "Internal Server Error",
-                Details = exception.Message
-            }
-        );
+        switch (exception)
+        {
+            case NotFoundException:
+                statusCode = (int)HttpStatusCode.NotFound;
+                message = exception.Message;
+                break;
+
+            case ValidationException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                message = exception.Message;
+                break;
+
+            default:
+                statusCode = (int)HttpStatusCode.InternalServerError;
+                message = "Internal Server Error";
+                break;
+        }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = statusCode;
+
+        var result = JsonSerializer.Serialize(new { StatusCode = statusCode, Message = message });
 
         return context.Response.WriteAsync(result);
     }

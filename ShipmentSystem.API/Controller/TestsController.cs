@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShipmentSystem.Application.Exceptions;
 
 namespace ShipmentSystem.API.Controller;
 
@@ -20,5 +21,17 @@ public class TestsController : ControllerBase
 
         // This will trigger the middleware
         throw new Exception("💥 This is a test exception to verify middleware logging!");
+    }
+
+    [HttpGet("notfound")]
+    public IActionResult ThrowNotFound()
+    {
+        throw new NotFoundException("Shipment not found with given ID.");
+    }
+
+    [HttpGet("invalid")]
+    public IActionResult ThrowValidation()
+    {
+        throw new ValidationException("Provided shipment data is invalid.");
     }
 }
