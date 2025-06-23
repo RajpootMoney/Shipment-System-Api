@@ -3,7 +3,7 @@ using ShipmentSystem.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔷 Serilog Configuration
+// Serilog Configuration
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -13,18 +13,18 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-// 🔷 Add services
+// Add services
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer(); // Needed for Swagger
+builder.Services.AddEndpointsApiExplorer(); // For Swagger
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 🔷 Middleware Pipeline
+// Middleware Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // Optional: configure endpoint
+    app.UseSwaggerUI();
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
