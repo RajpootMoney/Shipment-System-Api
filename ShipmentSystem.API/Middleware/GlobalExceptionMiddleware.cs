@@ -48,6 +48,11 @@ public class GlobalExceptionMiddleware
                 message = exception.Message;
                 break;
 
+            case DomainValidationException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                message = exception.Message;
+                break;
+
             default:
                 statusCode = (int)HttpStatusCode.InternalServerError;
                 message = "Internal Server Error";
