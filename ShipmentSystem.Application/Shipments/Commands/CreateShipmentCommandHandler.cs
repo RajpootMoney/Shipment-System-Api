@@ -10,10 +10,12 @@ namespace ShipmentSystem.Application.Shipments.Commands;
 public class CreateShipmentHandler : IRequestHandler<CreateShipmentCommand, Guid>
 {
     private readonly IObjectMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CreateShipmentHandler(IObjectMapper mapper)
+    public CreateShipmentHandler(IObjectMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Guid> Handle(
@@ -29,7 +31,8 @@ public class CreateShipmentHandler : IRequestHandler<CreateShipmentCommand, Guid
 
         var shipment = new Shipment(origin, destination, request.Dto.ShippedDate);
 
-        // TODO: Save to DB once infra ready
+        await _unitOfWork.Shipments.AddAsync(shipment, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return await Task.FromResult(shipment.Id);
     }

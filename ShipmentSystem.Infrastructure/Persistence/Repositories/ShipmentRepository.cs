@@ -1,26 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Domain.Entities;
+using ShipmentSystem.Infrastructure.Persistence.Common;
 
 namespace ShipmentSystem.Infrastructure.Persistence.Repositories;
 
-public class ShipmentRepository : IShipmentRepository
+public class ShipmentRepository : Repository<Shipment>, IShipmentRepository
 {
-    private readonly ShipmentDbContext _context;
-
     public ShipmentRepository(ShipmentDbContext context)
-    {
-        _context = context;
-    }
+        : base(context) { }
 
-    public async Task AddAsync(Shipment shipment, CancellationToken cancellationToken)
+    public Task<Shipment?> GetShipmentWithDetails(Guid id)
     {
-        await _context.Shipments.AddAsync(shipment, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task<Shipment?> GetByIdAsync(Guid id)
-    {
-        return await _context.Shipments.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+        return _dbSet.FirstOrDefaultAsync(s => s.Id == id);
     }
 }

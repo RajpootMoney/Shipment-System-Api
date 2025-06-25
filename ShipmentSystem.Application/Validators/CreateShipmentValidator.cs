@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
 using ShipmentSystem.Application.DTOs;
+using ShipmentSystem.Application.Shipments.Commands;
 
 namespace ShipmentSystem.Application.Validators;
 
-public class CreateShipmentDtoValidator : AbstractValidator<CreateShipmentDto>
+public class CreateShipmentCommandValidator : AbstractValidator<CreateShipmentCommand>
 {
-    public CreateShipmentDtoValidator()
+    public CreateShipmentCommandValidator()
     {
-        RuleFor(x => x.Origin).NotNull();
-        RuleFor(x => x.Destination).NotNull();
-        RuleFor(x => x.ShippedDate).GreaterThan(DateTime.MinValue);
+        RuleFor(x => x.Dto.Origin.ZipCode).NotEmpty().WithMessage("Origin ZIP code is required.");
+        RuleFor(x => x.Dto.ShippedDate)
+            .GreaterThanOrEqualTo(DateTime.Today)
+            .WithMessage("Shipment date cannot be in the past.");
     }
 }

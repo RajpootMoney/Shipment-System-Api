@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Hangfire;
+using Serilog;
 using ShipmentSystem.API.Middleware;
 using ShipmentSystem.Application;
 using ShipmentSystem.Infrastructure;
@@ -33,6 +34,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseHangfireDashboard("/hangfire");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

@@ -1,9 +1,9 @@
-﻿using ShipmentSystem.Domain.Entities;
+﻿using ShipmentSystem.Application.Interfaces.Common;
+using ShipmentSystem.Domain.Entities;
 
 namespace ShipmentSystem.Application.Interfaces;
 
-public interface IShipmentRepository
+public interface IShipmentRepository : IRepository<Shipment>
 {
-    Task AddAsync(Shipment shipment, CancellationToken cancellationToken);
-    Task<Shipment?> GetByIdAsync(Guid id);
+    Task<Shipment?> GetShipmentWithDetails(Guid id);
 }
