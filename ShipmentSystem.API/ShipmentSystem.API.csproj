@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ShipmentSystem.Application\ShipmentSystem.Application.csproj" />
+		<ProjectReference Include="..\ShipmentSystem.Infrastructure\ShipmentSystem.Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

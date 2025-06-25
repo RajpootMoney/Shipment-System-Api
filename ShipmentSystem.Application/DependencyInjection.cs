@@ -9,14 +9,15 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Register application services
-        services.AddScoped<IShipmentService, ShipmentService>();
-
         // Register AutoMapper
         services.AddAutoMapper(typeof(MappingProfile));
 
         // Register abstraction over AutoMapper
         services.AddScoped<IObjectMapper, AutoMapperAdapter>();
+
+        services.AddMediatR(cfg =>
+            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly)
+        );
 
         return services;
     }

@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using ShipmentSystem.API.Middleware;
 using ShipmentSystem.Application;
+using ShipmentSystem.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add services
 builder.Services.AddControllers();
