@@ -7,17 +7,18 @@ public class Address : ValueObject
     public string Street { get; private set; }
     public string City { get; private set; }
     public string State { get; private set; }
-    public string ZipCode { get; private set; }
+    public string PostalCode { get; private set; }
+    public string Country { get; private set; }
 
-    // Required for EF Core
     private Address() { }
 
-    public Address(string street, string city, string state, string zipCode)
+    public Address(string street, string city, string state, string postalCode, string country)
     {
         Street = street;
         City = city;
         State = state;
-        ZipCode = zipCode;
+        PostalCode = postalCode;
+        Country = country;
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
@@ -25,11 +26,12 @@ public class Address : ValueObject
         yield return Street;
         yield return City;
         yield return State;
-        yield return ZipCode;
+        yield return PostalCode;
+        yield return Country;
     }
 
     public override string ToString()
     {
-        return $"{Street}, {City}, {State} {ZipCode}";
+        return $"{Street}, {City}, {State}, {Country}, {PostalCode}";
     }
 }

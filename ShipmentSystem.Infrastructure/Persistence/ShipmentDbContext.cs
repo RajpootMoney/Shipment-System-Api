@@ -2,33 +2,37 @@
 using ShipmentSystem.Domain.Common;
 using ShipmentSystem.Domain.Entities;
 
-namespace ShipmentSystem.Infrastructure.Persistence
+namespace ShipmentSystem.Infrastructure.Persistence;
+
+public class ShipmentDbContext : DbContext
 {
-    public class ShipmentDbContext : DbContext
+    public ShipmentDbContext(DbContextOptions<ShipmentDbContext> options)
+        : base(options) { }
+
+    public DbSet<Shipment> Shipments => Set<Shipment>();
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Driver> Drivers => Set<Driver>();
+    public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+    public DbSet<Package> Packages => Set<Package>();
+    public DbSet<TrackingEvent> TrackingEvents => Set<TrackingEvent>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public ShipmentDbContext(DbContextOptions<ShipmentDbContext> options)
-            : base(options) { }
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShipmentDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
 
-        public DbSet<Shipment> Shipments => Set<Shipment>();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<BaseEntity<Guid>>())
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShipmentDbContext).Assembly);
-            base.OnModelCreating(modelBuilder);
+            if (entry.State == EntityState.Added)
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+
+            if (entry.State == EntityState.Modified)
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            foreach (var entry in ChangeTracker.Entries<BaseEntity<Guid>>())
-            {
-                if (entry.State == EntityState.Added)
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-
-                if (entry.State == EntityState.Modified)
-                    entry.Entity.UpdatedAt = DateTime.UtcNow;
-            }
-
-            return base.SaveChangesAsync(cancellationToken);
-        }
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

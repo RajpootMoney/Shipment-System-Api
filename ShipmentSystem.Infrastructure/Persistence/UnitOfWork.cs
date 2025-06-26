@@ -13,9 +13,11 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         Shipments = new Repository<Shipment>(_context);
+        Packages = new Repository<Package>(_context);
     }
 
     public IRepository<Shipment> Shipments { get; }
+    public IRepository<Package> Packages { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) =>
         _context.SaveChangesAsync(cancellationToken);

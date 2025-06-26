@@ -1,7 +1,7 @@
 ﻿using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ShipmentSystem.Application.DTOs;
+using ShipmentSystem.Application.DTOs.Shipments;
 using ShipmentSystem.Application.Shipments.Commands;
 using ShipmentSystem.Application.Shipments.Queries;
 using ShipmentSystem.Infrastructure.BackgroundJobs.Interfaces;

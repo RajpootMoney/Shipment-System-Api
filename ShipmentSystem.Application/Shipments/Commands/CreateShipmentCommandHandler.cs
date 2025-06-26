@@ -3,6 +3,7 @@ using ShipmentSystem.Application.Constants;
 using ShipmentSystem.Application.Exceptions;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Domain.Entities;
+using ShipmentSystem.Domain.Enums;
 using ShipmentSystem.Domain.ValueObjects;
 
 namespace ShipmentSystem.Application.Shipments.Commands;
@@ -23,17 +24,43 @@ public class CreateShipmentHandler : IRequestHandler<CreateShipmentCommand, Guid
         CancellationToken cancellationToken
     )
     {
-        var origin = _mapper.Map<Address>(request.Dto.Origin);
-        var destination = _mapper.Map<Address>(request.Dto.Destination);
+        var dto = request.Dto;
+
+        var origin = _mapper.Map<Address>(dto.Origin);
+        var destination = _mapper.Map<Address>(dto.Destination);
 
         if (origin == destination)
             throw new DomainValidationException(ErrorMessages.Shipment.OriginAndDestinationSame);
 
-        var shipment = new Shipment(origin, destination, request.Dto.ShippedDate);
+        var shipment = new Shipment(
+            customerId: dto.CustomerId,
+            driverId: dto.DriverId,
+            vehicleId: dto.VehicleId,
+            origin: origin,
+            destination: destination,
+            shippedDate: dto.ShippedDate,
+            status: Enum.Parse<ShipmentStatus>(dto.Status, ignoreCase: true),
+            estimatedDeliveryDate: dto.EstimatedDeliveryDate
+        );
+
+        // Map and add packages if any
+        if (dto.Packages != null && dto.Packages.Any())
+        {
+            foreach (var packageDto in dto.Packages)
+            {
+                var package = new Package(
+                    shipmentId: shipment.Id,
+                    weight: packageDto.Weight,
+                    dimensions: packageDto.Dimensions,
+                    contentDescription: packageDto.ContentDescription
+                );
+                shipment.Packages.Add(package);
+            }
+        }
 
         await _unitOfWork.Shipments.AddAsync(shipment, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return await Task.FromResult(shipment.Id);
+        return shipment.Id;
     }
 }
