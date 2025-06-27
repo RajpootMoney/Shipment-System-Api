@@ -2,11 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ShipmentSystem.Application.Behaviors;
-using ShipmentSystem.Application.DTOs;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Mapping;
 using ShipmentSystem.Application.Services;
-using ShipmentSystem.Application.Validators;
 
 namespace ShipmentSystem.Application;
 
