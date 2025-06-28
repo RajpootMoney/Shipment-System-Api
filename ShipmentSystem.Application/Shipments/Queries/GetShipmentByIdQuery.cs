@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using ShipmentSystem.Application.DTOs;
+using ShipmentSystem.Application.DTOs.Shipments;
 
 namespace ShipmentSystem.Application.Shipments.Queries;
 

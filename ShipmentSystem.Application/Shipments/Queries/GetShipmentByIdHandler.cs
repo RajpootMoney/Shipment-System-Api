@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ShipmentSystem.Application.Constants;
 using ShipmentSystem.Application.DTOs;
+using ShipmentSystem.Application.DTOs.Shipments;
 using ShipmentSystem.Application.Exceptions;
 using ShipmentSystem.Application.Interfaces;
 

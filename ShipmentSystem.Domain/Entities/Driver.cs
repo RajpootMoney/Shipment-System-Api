@@ -1,27 +1,23 @@
-﻿using ShipmentSystem.Domain.Common;
+﻿using ShipmentSystem.Domain.Enums;
 
 namespace ShipmentSystem.Domain.Entities;
 
-public class Driver : BaseEntity<Guid>
+public class Driver : User
 {
-    public string Name { get; private set; }
-    public string Phone { get; private set; }
     public string LicenseNumber { get; private set; }
-
     public ICollection<Shipment> Shipments { get; private set; } = new List<Shipment>();
 
     private Driver() { }
 
-    public Driver(string name, string phone, string licenseNumber)
+    public Driver(
+        string name,
+        string email,
+        string phone,
+        string passwordHash,
+        string licenseNumber
+    )
+        : base(name, email, phone, passwordHash, UserRole.Driver)
     {
-        Name = name ?? throw new ArgumentNullException(nameof(name));
-        Phone = phone ?? throw new ArgumentNullException(nameof(phone));
-        LicenseNumber = licenseNumber ?? throw new ArgumentNullException(nameof(licenseNumber));
-    }
-
-    public void UpdateDetails(string phone, string licenseNumber)
-    {
-        Phone = phone;
         LicenseNumber = licenseNumber;
     }
 }

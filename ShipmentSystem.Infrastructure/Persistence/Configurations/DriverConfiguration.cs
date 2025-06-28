@@ -8,12 +8,16 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
 {
     public void Configure(EntityTypeBuilder<Driver> builder)
     {
-        builder.HasKey(x => x.Id);
-
-        builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
-        builder.Property(x => x.Phone).IsRequired().HasMaxLength(15);
+        // Configure Driver-specific fields only
         builder.Property(x => x.LicenseNumber).IsRequired().HasMaxLength(50);
 
         builder.HasIndex(x => x.LicenseNumber).IsUnique();
+
+        // Configure navigation
+        builder
+            .HasMany(d => d.Shipments)
+            .WithOne(s => s.Driver)
+            .HasForeignKey(s => s.DriverId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

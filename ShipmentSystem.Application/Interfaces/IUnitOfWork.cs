@@ -7,5 +7,6 @@ public interface IUnitOfWork : IDisposable
 {
     IRepository<Shipment> Shipments { get; }
     IRepository<Package> Packages { get; }
+    IUserRepository Users { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

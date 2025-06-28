@@ -5,6 +5,7 @@ using ShipmentSystem.Application.Behaviors;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Mapping;
 using ShipmentSystem.Application.Services;
+using ShipmentSystem.Application.Validators;
 
 namespace ShipmentSystem.Application;
 
@@ -20,6 +21,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly)
         );
+        services.AddValidatorsFromAssembly(typeof(RegisterCommandValidator).Assembly);
 
         return services;
     }

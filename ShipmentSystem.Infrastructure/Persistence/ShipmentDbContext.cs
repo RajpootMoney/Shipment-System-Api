@@ -9,9 +9,8 @@ public class ShipmentDbContext : DbContext
     public ShipmentDbContext(DbContextOptions<ShipmentDbContext> options)
         : base(options) { }
 
+    public DbSet<User> Users => Set<User>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
-    public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<Driver> Drivers => Set<Driver>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<Package> Packages => Set<Package>();
     public DbSet<TrackingEvent> TrackingEvents => Set<TrackingEvent>();
