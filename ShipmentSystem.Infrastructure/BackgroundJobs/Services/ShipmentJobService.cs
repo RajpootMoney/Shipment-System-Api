@@ -17,7 +17,7 @@ public class ShipmentJobService : IShipmentJobService
         _logger.LogInformation("🔧 Background processing shipment with ID: {Id}", shipmentId);
 
         // Simulate work
-        await Task.Delay(2000);
+        await Task.Delay(20000);
 
         _logger.LogInformation("✅ Finished processing shipment: {Id}", shipmentId);
     }

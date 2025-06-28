@@ -21,7 +21,7 @@ public static class DependencyInjection
     )
     {
         services.AddDbContext<ShipmentDbContext>(options =>
-            options.UseSqlite(configuration.GetConnectionString("DefaultConnection"))
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
         );
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IShipmentRepository, ShipmentRepository>();
