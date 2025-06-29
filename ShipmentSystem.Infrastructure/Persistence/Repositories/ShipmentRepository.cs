@@ -12,6 +12,10 @@ public class ShipmentRepository : Repository<Shipment>, IShipmentRepository
 
     public Task<Shipment?> GetShipmentWithDetails(Guid id)
     {
-        return _dbSet.FirstOrDefaultAsync(s => s.Id == id);
+        return _dbSet
+            .Include(x => x.Customer)
+            .Include(x => x.Driver)
+            .Include(x => x.Vehicle)
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
 }

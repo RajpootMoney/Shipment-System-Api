@@ -23,7 +23,7 @@ public class GetShipmentByIdHandler : IRequestHandler<GetShipmentByIdQuery, Ship
         CancellationToken cancellationToken
     )
     {
-        var shipment = await _repository.GetByIdAsync(request.Id);
+        var shipment = await _repository.GetShipmentWithDetails(request.Id);
 
         if (shipment == null)
             throw new NotFoundException(ErrorMessages.Shipment.NotFound);

@@ -1,8 +1,11 @@
 ﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using ShipmentSystem.API.Middleware;
 using ShipmentSystem.Application;
 using ShipmentSystem.Infrastructure;
+using ShipmentSystem.Infrastructure.Persistence;
+using ShipmentSystem.Infrastructure.Persistence.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ShipmentDbContext>();
+    context.Database.Migrate();
+
+    await SeedData.SeedAsync(context);
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();

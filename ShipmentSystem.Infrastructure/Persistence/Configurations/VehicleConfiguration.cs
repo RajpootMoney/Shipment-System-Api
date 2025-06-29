@@ -10,10 +10,21 @@ public class VehicleConfiguration : IEntityTypeConfiguration<Vehicle>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.TruckNumber).IsRequired().HasMaxLength(50);
-        builder.Property(x => x.TruckType).IsRequired().HasMaxLength(50);
-        builder.Property(x => x.Capacity).IsRequired().HasColumnType("decimal(10,2)");
+        builder.Property(x => x.VehicleNumber).IsRequired().HasMaxLength(50);
 
-        builder.HasIndex(x => x.TruckNumber).IsUnique();
+        builder.HasIndex(x => x.VehicleNumber).IsUnique();
+
+        builder.OwnsOne(
+            x => x.VehicleType,
+            tt =>
+            {
+                tt.Property(t => t.Value)
+                    .HasColumnName("VehicleType")
+                    .IsRequired()
+                    .HasMaxLength(50);
+            }
+        );
+
+        builder.Property(x => x.Capacity).IsRequired().HasColumnType("decimal(10,2)");
     }
 }

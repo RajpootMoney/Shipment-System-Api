@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShipmentSystem.Domain.Common;
 using ShipmentSystem.Domain.Entities;
+using ShipmentSystem.Domain.ValueObjects;
 
 namespace ShipmentSystem.Infrastructure.Persistence;
 
@@ -12,6 +13,7 @@ public class ShipmentDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Shipment> Shipments => Set<Shipment>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+    public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
     public DbSet<Package> Packages => Set<Package>();
     public DbSet<TrackingEvent> TrackingEvents => Set<TrackingEvent>();
 
