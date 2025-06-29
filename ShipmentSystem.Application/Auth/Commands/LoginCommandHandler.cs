@@ -3,10 +3,11 @@ using ShipmentSystem.Application.Auth.Models;
 using ShipmentSystem.Application.Exceptions;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Interfaces.Auth;
+using ShipmentSystem.Domain.Common;
 
 namespace ShipmentSystem.Application.Auth.Commands;
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<string>>
 {
     private readonly IObjectMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +20,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
         _jwtService = jwtService;
     }
 
-    public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(
+        LoginCommand request,
+        CancellationToken cancellationToken
+    )
     {
         var user = await _unitOfWork.Users.FindByEmailAsync(request.Email);
 
@@ -30,6 +34,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
 
         var jwtPayload = _mapper.Map<JwtUserPayload>(user);
 
-        return _jwtService.GenerateToken(jwtPayload);
+        return Result<string>.Ok(_jwtService.GenerateToken(jwtPayload), "Login success!");
     }
 }

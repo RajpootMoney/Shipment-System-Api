@@ -21,7 +21,8 @@ public static class DependencyInjection
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly)
         );
-        services.AddValidatorsFromAssembly(typeof(RegisterCommandValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(RegisterCustomerCommandValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(RegisterDriverCommandValidator).Assembly);
 
         return services;
     }

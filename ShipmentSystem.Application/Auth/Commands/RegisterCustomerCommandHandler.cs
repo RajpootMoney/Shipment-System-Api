@@ -3,11 +3,13 @@ using ShipmentSystem.Application.Auth.Models;
 using ShipmentSystem.Application.Exceptions;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Interfaces.Auth;
+using ShipmentSystem.Domain.Common;
 using ShipmentSystem.Domain.Entities;
 
 namespace ShipmentSystem.Application.Auth.Commands;
 
-public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCommand, string>
+public class RegisterCustomerCommandHandler
+    : IRequestHandler<RegisterCustomerCommand, Result<string>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtService _jwtService;
@@ -24,7 +26,7 @@ public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCo
         _mapper = mapper;
     }
 
-    public async Task<string> Handle(
+    public async Task<Result<string>> Handle(
         RegisterCustomerCommand request,
         CancellationToken cancellationToken
     )
@@ -39,6 +41,6 @@ public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCo
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var token = _jwtService.GenerateToken(_mapper.Map<JwtUserPayload>(customer));
-        return token;
+        return Result<string>.Ok(token, "Customer registered successfully");
     }
 }

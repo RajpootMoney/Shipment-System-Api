@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using ShipmentSystem.Application.Exceptions;
+using ShipmentSystem.Domain.Common;
 
 namespace ShipmentSystem.API.Middleware;
 
@@ -26,15 +27,19 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "💥 Exception caught in GlobalExceptionMiddleware");
+            _logger.LogError(
+                ex,
+                "//==========================Exception caught in GlobalExceptionMiddleware=====================//"
+            );
             await HandleExceptionAsync(context, ex);
         }
     }
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        int statusCode;
-        string message;
+        int statusCode = (int)HttpStatusCode.InternalServerError;
+        string message = "Internal Server Error";
+        List<string>? errors = null;
 
         switch (exception)
         {
@@ -43,27 +48,28 @@ public class GlobalExceptionMiddleware
                 message = exception.Message;
                 break;
 
-            case ValidationException:
+            case ValidationException validationEx:
                 statusCode = (int)HttpStatusCode.BadRequest;
-                message = exception.Message;
+                message = "Validation failed";
+                errors = validationEx.Errors?.ToList();
                 break;
 
-            case DomainValidationException:
+            case DomainValidationException domainValidationEx:
                 statusCode = (int)HttpStatusCode.BadRequest;
-                message = exception.Message;
+                message = "Validation failed";
+                errors = domainValidationEx.Errors?.ToList(); // You updated this already
                 break;
 
             default:
-                statusCode = (int)HttpStatusCode.InternalServerError;
-                message = "Internal Server Error";
+                message = exception.Message; // Optionally hide this in prod
                 break;
         }
+
+        var response = Result<string>.Fail(message, errors);
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
 
-        var result = JsonSerializer.Serialize(new { StatusCode = statusCode, Message = message });
-
-        return context.Response.WriteAsync(result);
+        return context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 }
