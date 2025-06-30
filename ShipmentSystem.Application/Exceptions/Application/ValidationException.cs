@@ -1,4 +1,4 @@
-﻿namespace ShipmentSystem.Application.Exceptions;
+﻿namespace ShipmentSystem.Application.Exceptions.Application;
 
 public class ValidationException : Exception
 {

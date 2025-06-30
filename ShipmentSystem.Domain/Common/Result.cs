@@ -3,9 +3,9 @@
 public class Result<T> : IResult
 {
     public bool Success { get; init; }
-    public T Data { get; init; }
-    public string Message { get; init; }
-    public List<string> Errors { get; init; }
+    public T? Data { get; init; }
+    public string Message { get; init; } = string.Empty;
+    public List<string> Errors { get; init; } = new();
 
     public static Result<T> Ok(T data, string message = "") =>
         new()

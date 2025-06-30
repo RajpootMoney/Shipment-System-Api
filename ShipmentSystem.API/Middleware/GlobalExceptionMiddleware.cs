@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using ShipmentSystem.Application.Exceptions;
+using ShipmentSystem.Application.Exceptions.Application;
 using ShipmentSystem.Domain.Common;
 
 namespace ShipmentSystem.API.Middleware;

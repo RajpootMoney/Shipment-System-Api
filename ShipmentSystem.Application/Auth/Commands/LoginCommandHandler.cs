@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using ShipmentSystem.Application.Auth.Models;
 using ShipmentSystem.Application.Exceptions;
+using ShipmentSystem.Application.Exceptions.Application;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Interfaces.Auth;
 using ShipmentSystem.Domain.Common;

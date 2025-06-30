@@ -5,9 +5,9 @@ namespace ShipmentSystem.Domain.Entities;
 
 public class Vehicle : BaseEntity<Guid>
 {
-    public string VehicleNumber { get; private set; }
-    public VehicleType VehicleType { get; private set; }
-    public decimal Capacity { get; private set; }
+    public string VehicleNumber { get; private set; } = default!;
+    public VehicleType VehicleType { get; private set; } = default!;
+    public decimal Capacity { get; private set; } = default;
 
     public ICollection<Shipment> Shipments { get; private set; } = new List<Shipment>();
 

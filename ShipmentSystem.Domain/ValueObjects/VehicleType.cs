@@ -4,7 +4,7 @@ namespace ShipmentSystem.Domain.ValueObjects;
 
 public class VehicleType : ValueObject
 {
-    public string Value { get; private set; }
+    public string Value { get; private set; } = string.Empty;
 
     private VehicleType() { }
 
