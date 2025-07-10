@@ -1,8 +1,10 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Interfaces.Auth;
 using ShipmentSystem.Infrastructure.BackgroundJobs.Interfaces;
@@ -20,20 +22,63 @@ public static class DependencyInjection
         IConfiguration configuration
     )
     {
-        services.AddDbContext<ShipmentDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
-        );
+        services.AddDatabase(configuration);
+        services.AddAuth(configuration);
+        services.AddHangfireSetup();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IShipmentRepository, ShipmentRepository>();
         services.AddScoped<IShipmentJobService, ShipmentJobService>();
         services.AddScoped<IJwtService, JwtService>();
-        services.AddHangfire(config =>
-        {
-            config.UseMemoryStorage(); // For dev, or use .UseSqlServerStorage(...)
-        });
+        services.AddHttpContextAccessor();
 
+        return services;
+    }
+
+    private static IServiceCollection AddDatabase(
+        this IServiceCollection services,
+        IConfiguration config
+    )
+    {
+        services.AddDbContext<ShipmentDbContext>(options =>
+            options.UseNpgsql(config.GetConnectionString("DefaultConnection"))
+        );
+        return services;
+    }
+
+    private static IServiceCollection AddAuth(
+        this IServiceCollection services,
+        IConfiguration config
+    )
+    {
+        var section = config.GetSection("Auth0");
+        services.Configure<Auth0Settings>(section);
+        var auth0Settings = section.Get<Auth0Settings>();
+
+        services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Authority = $"https://{auth0Settings.Domain}/";
+                options.Audience = auth0Settings.Audience;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "https://schemas.myapi.com/roles"
+                };
+            });
+
+        services.AddAuthorization();
+        return services;
+    }
+
+    private static IServiceCollection AddHangfireSetup(this IServiceCollection services)
+    {
+        services.AddHangfire(config => config.UseMemoryStorage());
         services.AddHangfireServer();
-
         return services;
     }
 }

@@ -25,6 +25,16 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // For Swagger
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        }
+    );
+});
 
 var app = builder.Build();
 
@@ -47,6 +57,7 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHangfireDashboard("/hangfire");
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 

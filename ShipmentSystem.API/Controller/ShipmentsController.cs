@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShipmentSystem.Application.DTOs.Shipments;
 using ShipmentSystem.Application.Shipments.Commands;
@@ -8,6 +9,7 @@ using ShipmentSystem.Infrastructure.BackgroundJobs.Interfaces;
 
 namespace ShipmentSystem.API.Controller;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ShipmentsController : ControllerBase
@@ -31,6 +33,7 @@ public class ShipmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, new { shipmentId = id });
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
