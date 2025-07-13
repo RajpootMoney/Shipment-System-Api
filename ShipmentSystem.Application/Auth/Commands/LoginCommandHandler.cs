@@ -1,7 +1,4 @@
 ﻿using MediatR;
-using ShipmentSystem.Application.Auth.Models;
-using ShipmentSystem.Application.Exceptions.Application;
-using ShipmentSystem.Application.Interfaces;
 using ShipmentSystem.Application.Interfaces.Auth;
 using ShipmentSystem.Domain.Common;
 
@@ -9,15 +6,11 @@ namespace ShipmentSystem.Application.Auth.Commands;
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<string>>
 {
-    private readonly IObjectMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IJwtService _jwtService;
+    private readonly IAuth0Service _auth0Service;
 
-    public LoginCommandHandler(IUnitOfWork unitOfWork, IJwtService jwtService, IObjectMapper mapper)
+    public LoginCommandHandler(IAuth0Service auth0Service)
     {
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-        _jwtService = jwtService;
+        _auth0Service = auth0Service;
     }
 
     public async Task<Result<string>> Handle(
@@ -25,15 +18,15 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<string>>
         CancellationToken cancellationToken
     )
     {
-        var user = await _unitOfWork.Users.FindByEmailAsync(request.Email);
+        var tokenResult = await _auth0Service.LoginAsync(
+            request.Email,
+            request.Password,
+            cancellationToken
+        );
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-        {
-            throw new UnauthorizedException("Invalid email or password.");
-        }
+        if (!tokenResult.IsSuccess)
+            return Result<string>.Fail(tokenResult.ErrorMessage);
 
-        var jwtPayload = _mapper.Map<JwtUserPayload>(user);
-
-        return Result<string>.Ok(_jwtService.GenerateToken(jwtPayload), "Login success!");
+        return Result<string>.Ok(tokenResult.AccessToken!, "Login success!");
     }
 }

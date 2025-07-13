@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ShipmentSystem.Application.Auth.Models;
 using ShipmentSystem.Application.Interfaces.Auth;
-using ShipmentSystem.Domain.Entities;
 
 namespace ShipmentSystem.Infrastructure.Services.Auth;
 

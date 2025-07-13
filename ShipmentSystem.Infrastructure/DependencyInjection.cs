@@ -29,7 +29,9 @@ public static class DependencyInjection
         services.AddScoped<IShipmentRepository, ShipmentRepository>();
         services.AddScoped<IShipmentJobService, ShipmentJobService>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IAuth0Service, Auth0Service>();
         services.AddHttpContextAccessor();
+        services.AddHttpClient<IAuth0Service, Auth0Service>();
 
         return services;
     }
