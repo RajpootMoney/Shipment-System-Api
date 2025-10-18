@@ -46,7 +46,7 @@ ShipmentSystem.sln
 
 ```bash
 # Clone this repository
-git clone https://github.com/your-username/Shipment-System-API.git
+git clone https://github.com/rajpootmoney/Shipment-System-API.git
 
 # Navigate to API folder
 cd ShipmentSystem.API
